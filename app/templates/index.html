@@ -1,0 +1,34 @@
+{% extends "base.html" %} 
+{% import "bootstrap/wtf.html" as wtf %} 
+
+{% block title %}MR.SQL - Home{% endblock %}
+{% block page_content %} 
+<div class="page-header">
+    <h1>Welcome to MR.SQL!</h1>
+</div> 
+<div>
+    <div style="float:left; width: 56%; font-size: 20px">
+        <p>
+            <big><b>M</b> for mimic and <b>R</b> for randomization. </big><br>
+            &nbsp&nbsp&nbsp&nbsp
+            MR.SQL is a prototype system based on SQL Instructions-Set Randomization and which utilizes some concepts in the Cyber Mimic Defense, aiming at protect the website from SQL injection.<br>
+            &nbsp&nbsp&nbsp&nbsp
+            This prototype system uses multiple different databases simultaneously and creates different randomized queries for each database when users sign in, and output a result after a majority voting by those multiple databases.
+        </p>
+    </div>
+    
+    <div style="float:left; width: 44%">
+        <img src="../static/index.jpeg">
+    </div>
+</div>
+<div style="position:fixed; bottom:0px;">
+    <p>If you are interested in this and want to know more,</p>
+    <p>please feel free to contact me by e-mail: 0502tonylin@gmail.com</p>
+</div>
+
+<div style="position:fixed; bottom:0px; width:74%;">
+    <p align="right">The local date and time is {{ moment(current_time).format('LLL') }}</p> 
+    <p align="right">That was {{ moment(current_time).fromNow(refresh=True) }}</p>
+</div>
+{% endblock %}
+
