@@ -6,7 +6,7 @@ from flask import Flask, render_template, flash
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Length, equal_to
 import wtforms.validators as validators
 
@@ -51,7 +51,7 @@ class Task2LoginForm(Form):
             validators.length(min=8, max=15, message="The password's length must be between 8 and 15 character.")
         ]
     )
-    captcha_code = StringField(
+    captcha_code = IntegerField(
         label="Input captcha",
         validators=[
             validators.data_required(message="Please input the captcha."),

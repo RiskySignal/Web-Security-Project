@@ -1,0 +1,62 @@
+{% macro captchaForm(form) %}
+    <form action="" method="post" class="form" role="form">
+        {{ form.hidden_tag() }}
+
+        {% if form.errors.username %}
+            <div class="form-group has-error required">
+                {{ form.username.label(class="control-label") | safe }}
+                {{ form.username(class="form-control", required=True) }}
+                {% for error in form.errors.username %}
+                    <p class="help-block">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="form-group requied">
+                {{ form.username.label(class="control-label") | safe }}
+                {{ form.username(class="form-control", required=True) }}
+            </div>
+        {% endif %}
+
+        {% if form.errors.password %}
+            <div class="form-group has-error required">
+                {{ form.password.label(class="control-label") | safe }}
+                {{ form.password(class="form-control", required=True) }}
+                {% for error in form.errors.password %}
+                    <p class="help-block">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="form-group required">
+                {{ form.password.label(class="control-label") | safe }}
+                {{ form.password(class="form-control", required=True) }}
+            </div>
+        {% endif %}
+
+        {% if form.errors.captcha_code %}
+            <div class="form-group has-error required">
+                <div class="left-input">
+                    {{ form.captcha_code.label(class="control-label") | safe }}
+                    {{ form.captcha_code(class="form-control", required=True) }}
+                </div>
+                <div class="right-image">
+                    <img src="../static/test.png" alt="">
+                </div>
+                {% for error in form.errors.captcha_code %}
+                    <p class="help-block">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="form-group required" style="display: flex;justify-content: space-between;">
+                <div class="left-input" style="width: 50%;">
+                    {{ form.captcha_code.label(class="control-label") | safe }}
+                    {{ form.captcha_code(class="form-control", required=True) }}
+                </div>
+                <div class="right-image" style="width: 40%;">
+                    <img src="../static/test.png" alt="" style="border-radius: 3px;">
+                </div>
+            </div>
+        {% endif %}
+
+        {{ form.submit(class="btn btn-primary submit") }}
+    </form>
+{% endmacro %}
