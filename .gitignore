@@ -105,3 +105,8 @@ venv.bak/
 
 # idea
 .idea
+
+# dataset
+/dataset
+hash.json
+unhash.json

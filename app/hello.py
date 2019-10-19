@@ -1,15 +1,14 @@
-from flask import Flask, render_template, url_for, flash
-from flask_bootstrap import Bootstrap
-from flask_wtf import Form
-from flask_moment import Moment
-from flask_login import UserMixin
-
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length, equal_to
-
 import os
 import sqlite3
 from datetime import datetime
+
+from flask import Flask, render_template, flash
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from flask_wtf import Form
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Length, equal_to
+import wtforms.validators as validators
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -20,7 +19,6 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 app.config['DATABASE'] = 'test_data.db'
 conn = sqlite3.connect(app.config['DATABASE'], check_same_thread=False)
-# cur = conn.cursor()
 
 
 class SignupForm(Form):
@@ -35,6 +33,44 @@ class SignupForm(Form):
                         validators=[DataRequired()])
     # 一个注册按钮
     submit = SubmitField('signup')
+
+
+class Task2LoginForm(Form):
+    # wtforms form module for task 2
+    username = StringField(
+        label="Input your email address",
+        validators=[
+            validators.data_required(message="Please input your email address."),
+            validators.email(message="Please input a legal email address.")
+        ]
+    )
+    password = PasswordField(
+        label="Input your password",
+        validators=[
+            validators.data_required(message="Please input your password."),
+            validators.length(min=8, max=15, message="The password's length must be between 8 and 15 character.")
+        ]
+    )
+    captcha_code = StringField(
+        label="Input captcha",
+        validators=[
+            validators.data_required(message="Please input the captcha."),
+            validators.length(min=4, max=4, message="The length must be 4 numbers.")
+        ]
+    )
+
+    submit = SubmitField('Login')
+
+
+@app.route('/task2login', methods=['GET', 'POST'])
+def task2login():
+    form = Task2LoginForm()
+    if form.validate_on_submit():
+        print(form.username.data, form.password.data, form.captcha_code.data)
+        if form.username.data == "123@qq.com" and form.password.data == "123456":
+            flash("It's OK")
+
+    return render_template('login-task2.html', form=form)
 
 
 class SigninForm(Form):
@@ -98,6 +134,6 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
+
 if __name__ == '__main__':
     app.run()
-
