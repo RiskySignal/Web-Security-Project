@@ -39,7 +39,7 @@
                     {{ form.captcha_code(class="form-control", required=True) }}
                 </div>
                 <div class="right-image">
-                    <img src="../static/test.png" alt="">
+                    <img src="../../static/test.png" alt="">
                 </div>
                 {% for error in form.errors.captcha_code %}
                     <p class="help-block">{{ error }}</p>
@@ -52,7 +52,7 @@
                     {{ form.captcha_code(class="form-control", required=True) }}
                 </div>
                 <div class="right-image" style="width: 40%;">
-                    <img src="../static/test.png" alt="" style="border-radius: 3px;">
+                    <img src="/get_captcha" alt="" style="border-radius: 3px;">
                 </div>
             </div>
         {% endif %}

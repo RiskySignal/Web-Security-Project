@@ -1,6 +1,5 @@
-{% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-{% import "loginform-captcha.html" as lfc %}
+{% extends "task2/base.html" %}
+{% import "task2/form.html" as lfc %}
 
 {% block title %}Brute Force Login Page{% endblock %}
 {% block page_content %}
@@ -12,7 +11,7 @@
             {{ lfc.captchaForm(form=form) }}
         </div>
         <div style="float:right; width: 46%">
-            <img src="../static/UCAS.jpg" alt="" style="width: 100%;height: 100%;">
+            <img src="../../static/UCAS.jpg" alt="" style="width: 100%;height: 100%;">
         </div>
     </div>
 {% endblock %}
