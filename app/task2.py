@@ -1,42 +1,46 @@
 import os
+import sqlite3
 from datetime import timedelta
 from io import BytesIO
-
 import wtforms.validators as validators
-from flask import Flask, render_template, flash, make_response, session, redirect
+from flask import Flask, render_template, flash, make_response, session, redirect, request
 from flask_bootstrap import Bootstrap
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, SubmitField
-
-from util.captcha_code import generate_captcha
+from util.captcha_code import generate_captcha, captcha_hash
+from db_processor import verify_user
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2.0)
-# 初始化操作，之后就可以在程序中使用基模板
+app.config['DATABASE'] = './database/test.db'
 bootstrap = Bootstrap(app)
+CAPTCHA_SESSION_NAME = "captcha"
 
-
-# 初始化操作，之后就可以在浏览器中渲染日期和时间
-# app.config['DATABASE'] = 'test_data.db'
-# conn = sqlite3.connect(app.config['DATABASE'], check_same_thread=False)
+connection = sqlite3.connect(app.config['DATABASE'], check_same_thread=False)
 
 
 class loginForm(Form):
-    # wtforms form module for task 2
+    # Note that: If you use the db_processor to transform the data from txt to db, you may set the length according to that
+    username_min_l = 1
+    username_max_l = 20
+    password_min_l = 1
+    password_max_l = 32
+
     username = StringField(
         label="Input your email address",
         validators=[
             validators.data_required(message="Please input your email address."),
-            validators.email(message="Please input a legal email address.")
+            # validators.email(message="Please input a legal email address."),
+            validators.length(min=username_min_l, max=username_max_l, message="The usernmae's length must be between {min_length} and {max_length} characters.".format(min_length=username_min_l, max_length=username_max_l))
         ]
     )
     password = PasswordField(
         label="Input your password",
         validators=[
             validators.data_required(message="Please input your password."),
-            validators.length(min=8, max=15, message="The password's length must be between 8 and 15 character.")
+            validators.length(min=password_min_l, max=password_max_l, message="The password's length must be between {min_length} and {max_length} characters.".format(min_length=password_min_l, max_length=password_max_l))
         ]
     )
     captcha_code = StringField(
@@ -53,10 +57,23 @@ class loginForm(Form):
 @app.route('/login', methods=['GET', 'POST'])
 def task2login():
     form = loginForm()
-    if form.validate_on_submit():
-        print(form.username.data, form.password.data, form.captcha_code.data)
-        if form.username.data == "123@qq.com" and form.password.data == "123456":
-            flash("It's OK")
+    if request.method == "POST" and form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        captcha = form.captcha_code.data
+
+        if CAPTCHA_SESSION_NAME in session:
+            if session[CAPTCHA_SESSION_NAME] == captcha_hash(captcha):
+                if verify_user(username, password, connection):
+                    flash("成功！")
+                else:
+                    flash("用户名密码错误！")
+            else:
+                # the captcha is not right
+                flash("验证码错误！")
+        else:
+            # the captcha is out of date
+            flash("验证码过期！")
 
     return render_template('task2/login.html', form=form)
 
@@ -71,7 +88,7 @@ def get_captcha():
     response = make_response(captcha_image)
     response.headers["Content-Type"] = "image/png"
 
-    session["captcha"] = hashed_code
+    session[CAPTCHA_SESSION_NAME] = hashed_code
     session.permanent = True
 
     return response
@@ -82,27 +99,13 @@ def index():
     return redirect('/login')
 
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = SigninForm()
-#     if form.validate_on_submit():
-#         cur = conn.cursor()
-#         if cur.execute("select * from users where username = '%s' and password = '%s'"
-#                        % (form.username.data, form.password.data)).fetchone() is not None:
-#             flash("Login successfully")
-#             # return render_template(url_for('index'))
-#         else:
-#             flash("Authentication failed")
-#     return render_template('sign.html', form=form, current_time=datetime.utcnow())
-
-
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found():
     return render_template('task2/404.html'), 404
 
 
 @app.errorhandler(500)
-def internal_server_error(e):
+def internal_server_error():
     return render_template('task2/500.html'), 500
 
 
