@@ -110,3 +110,6 @@ venv.bak/
 /dataset
 hash.json
 unhash.json
+
+# database
+*.db

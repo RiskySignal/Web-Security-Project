@@ -1,5 +1,6 @@
 import sqlite3
-from werkzeug.security import generate_password_hash, check_password_hash
+
+from werkzeug.security import generate_password_hash
 
 conn = sqlite3.connect('test.db')
 
@@ -40,8 +41,7 @@ print(type(generate_password_hash(password)))
 print(check_password_hash(generate_password_hash(password), password))
 print(check_password_hash(generate_password_hash(password), password2))'''
 
-
-# c.execute("insert into users values('%d', '%s', '%s')" % (user_id, username, password_hash))
+# c.execute("insert into users values('%d', '%s', '%s')" % (user_id, username, password_hash_db))
 # conn.commit()
 # print(c.execute("select * from users where username = '%s' and password = '%s'"
 #  % (username, generate_password_hash(password))).fetchone())
