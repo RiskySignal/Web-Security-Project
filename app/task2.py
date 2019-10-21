@@ -10,7 +10,6 @@ from wtforms import StringField, PasswordField, SubmitField
 from util.captcha_code import generate_captcha, captcha_hash
 from db_processor import verify_user
 
-basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2.0)
@@ -21,7 +20,7 @@ CAPTCHA_SESSION_NAME = "captcha"
 connection = sqlite3.connect(app.config['DATABASE'], check_same_thread=False)
 
 
-class loginForm(Form):
+class LoginForm(Form):
     # Note that: If you use the db_processor to transform the data from txt to db, you may set the length according to that
     username_min_l = 1
     username_max_l = 20
@@ -56,7 +55,7 @@ class loginForm(Form):
 
 @app.route('/login', methods=['GET', 'POST'])
 def task2login():
-    form = loginForm()
+    form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
         username = form.username.data
         password = form.password.data
