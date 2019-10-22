@@ -13,9 +13,9 @@ from db_processor import verify_user
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2.0)
+CAPTCHA_SESSION_NAME = "captcha"
 app.config['DATABASE'] = './database/test.db'
 bootstrap = Bootstrap(app)
-CAPTCHA_SESSION_NAME = "captcha"
 
 connection = sqlite3.connect(app.config['DATABASE'], check_same_thread=False)
 

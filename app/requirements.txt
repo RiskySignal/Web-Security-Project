@@ -2,3 +2,7 @@ flask
 wtforms
 flask-bootstrap
 flask-wtf
+captcha
+opencv-python
+keras
+tensorflow==1.12.2

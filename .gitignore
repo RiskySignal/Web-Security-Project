@@ -107,9 +107,13 @@ venv.bak/
 .idea
 
 # dataset
-/dataset
+dataset/
 hash.json
 unhash.json
 
 # database
 *.db
+
+# captcha training dataset
+*/captcha_dataset/*.png
+*/captcha_dataset/list.txt

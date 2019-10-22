@@ -1,5 +1,5 @@
 # coding=utf-8
-from util.captcha_code import generate_captcha
+from util.captcha_code import generate_captcha, gen_captcha_train_data
 import time
 import random
 
@@ -14,5 +14,8 @@ def generate_captcha_test(length, include_char=False):
 
 
 if __name__ == '__main__':
-    generate_captcha_test(length=4, include_char=False)
-    generate_captcha_test(length=4, include_char=True)
+    # generate_captcha_test(length=4, include_char=False)
+    # generate_captcha_test(length=4, include_char=True)
+
+    image_root = "../captcha_dataset"
+    gen_captcha_train_data(num=50000, image_root=image_root, length=4, include_char=False)
