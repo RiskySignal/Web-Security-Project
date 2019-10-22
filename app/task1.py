@@ -5,9 +5,11 @@ from flask_moment import Moment
 
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, equal_to
+from app.util.db_processor import verify_user
 
 import os
 import random
+import sqlite3
 from datetime import datetime
 
 rand = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -27,6 +29,8 @@ def create_code(rand_value):
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
+app.config['DATABASE'] = 'database/test.db'
+conn = sqlite3.connect(app.config['DATABASE'], check_same_thread=False)
 # 初始化操作，之后就可以在程序中使用基模板
 bootstrap = Bootstrap(app)
 # 初始化操作，之后就可以在浏览器中渲染日期和时间
@@ -77,7 +81,8 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.username.data == 'TonyLin' and form.password.data == '123456':
+        if verify_user(form.username.data, form.password.data, conn):
+        # if form.username.data == 'TonyLin' and form.password.data == '123456':
             flash("Login successfully")
             # return render_template(url_for('index'))
         else:
