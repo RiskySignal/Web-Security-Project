@@ -113,3 +113,8 @@ unhash.json
 
 # database
 *.db
+
+cracker/*
+cracker-python/dict.txt
+cracker-python/image.png
+cracker-python/networking.py
