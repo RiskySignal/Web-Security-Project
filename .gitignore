@@ -114,6 +114,11 @@ unhash.json
 # database
 *.db
 
+# image-dataset
+*/captcha_dataset/*.png
+*/captcha_dataset/list.txt
+
+# cracker
 cracker/*
 cracker-python/dict.txt
 cracker-python/image.png

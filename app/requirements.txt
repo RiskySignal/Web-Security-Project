@@ -1,3 +1,5 @@
+IPython
+numpy
 flask
 wtforms
 flask-bootstrap

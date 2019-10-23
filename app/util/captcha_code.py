@@ -35,6 +35,19 @@ def captcha_hash(captcha_string):
     return hashlib.md5(captcha_string.encode('utf-8')).hexdigest()
 
 
+def get_captcha_str_map(include_char=False):
+    """
+    get captcha string map
+    :param include_char: whether using english characters, Default is False
+    :return: total captcha string
+    """
+    str_map = "012345789"
+    if include_char:
+        str_map += "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+    return str_map
+
+
 def random_captcha_string(length, include_char=False):
     """
     randomly select a captcha string
@@ -45,13 +58,10 @@ def random_captcha_string(length, include_char=False):
     length = min(length, MAX_LENGTH)
     assert length > 0
 
-    char_map = "012345789"
-    if include_char:
-        char_map += "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
+    str_map = get_captcha_str_map(include_char=include_char)
     captcha_string = ""
     for _i in range(length):
-        captcha_string += random.choice(char_map)
+        captcha_string += random.choice(str_map)
 
     return captcha_string
 
