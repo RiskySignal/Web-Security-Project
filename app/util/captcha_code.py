@@ -48,6 +48,15 @@ def get_captcha_str_map(include_char=False):
     return str_map
 
 
+def get_str_map_len(include_char=False):
+    """
+    get captcha string map length
+    :param include_char: whether using english characters, Default is False
+    :return: the Length
+    """
+    return len(get_captcha_str_map(include_char))
+
+
 def random_captcha_string(length, include_char=False):
     """
     randomly select a captcha string

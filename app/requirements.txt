@@ -8,3 +8,4 @@ captcha
 opencv-python
 keras
 tensorflow==1.12.2
+pydot
