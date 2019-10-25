@@ -2,6 +2,7 @@ from optparse import OptionParser
 import os
 import requests
 from bs4 import BeautifulSoup
+from app.util.captcha_break import predict_image
 
 
 def check_successfully(content):
@@ -13,7 +14,8 @@ def check_successfully(content):
 
 
 def get_captcha(image_name):
-    code = input("code: ")
+    # code = input("code: ")
+    code = predict_image(image_name, model_path="../model/cnn.h5")
     return code
 
 
