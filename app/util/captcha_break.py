@@ -19,7 +19,7 @@ HEIGHT = 60
 WIDTH = 160
 INCLUDE_CHAR = False
 N_CAPT = 4
-BATCH_SIZE = 4
+BATCH_SIZE = 8
 TRAINING_STEPS = 1000
 VALIDA_STEPS = 100
 EPOCHS = 100
@@ -249,3 +249,7 @@ def predict_image(image_path, height=HEIGHT, width=WIDTH, n_capt=N_CAPT, n_char=
     set_config()
     input = convert_image(image_path, width=width, height=height)
     return predict_captcha(input, height=height, width=width, n_capt=n_capt, n_char=n_char, include_char=include_char, model_path=model_path)
+
+
+if __name__ == '__main__':
+    train_model()
