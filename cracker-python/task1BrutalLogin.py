@@ -45,7 +45,7 @@ def brute(user,password):
 def main():
     tsk = []
     dictfile='top50000pwd'
-    user='TonyLin'
+    user='zlzlmyidol'
     with open(dictfile,'r',encoding='utf-8') as f:
         for line in f.readlines():
             pwd=line.strip('\n')
@@ -54,11 +54,11 @@ def main():
                 break
 
 def DEBUG():
-    user='TonyLin'
-    password='123456'
+    user='zlzlmyidol'
+    password='z87915964'
     brute(user,password)
 
-_DEBUG=True
+_DEBUG=False
 
 if __name__ == '__main__':
     if _DEBUG:
