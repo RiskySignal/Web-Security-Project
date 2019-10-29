@@ -2,7 +2,16 @@ from optparse import OptionParser
 import os
 import requests
 from bs4 import BeautifulSoup
-from app.util.captcha_break import predict_image
+
+try:
+    from app.util.captcha_break import predict_image
+except Exception:
+    import sys
+
+    _file_abspath = os.path.abspath(__file__)
+    sys.path.append(os.path.dirname(os.path.dirname(_file_abspath)))
+    print(sys.path)
+    from app.util.captcha_break import predict_image
 
 
 def check_successfully(content):
@@ -100,4 +109,3 @@ if __name__ == '__main__':
         result, _, _ = crack(site, username, password)
         if result:
             print("Find correct username and password: %s - %s" % (username, password))
-

@@ -8,7 +8,7 @@ from flask_bootstrap import Bootstrap
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, SubmitField
 from util.captcha_code import generate_captcha, captcha_hash
-from db_processor import verify_user
+from util.db_processor import verify_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
