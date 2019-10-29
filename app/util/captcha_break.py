@@ -8,9 +8,18 @@ from tensorflow._api.v1.keras.layers import *
 from tensorflow._api.v1.keras.models import *
 from tensorflow._api.v1.keras.optimizers import *
 from tensorflow._api.v1.keras.utils import Sequence
-from util.captcha_code import random_captcha_string, get_captcha_str_map, get_str_map_len
 from PIL import Image
 from tqdm import tqdm
+
+try:
+    from util.captcha_code import random_captcha_string, get_captcha_str_map, get_str_map_len
+except Exception:
+    import sys
+    import os
+
+    _file_abspath = os.path.abspath(__file__)
+    sys.path.append(os.path.dirname(os.path.dirname(_file_abspath)))
+    from util.captcha_code import random_captcha_string, get_captcha_str_map, get_str_map_len
 
 # the width and width default is 160 and 60
 HEIGHT = 60
