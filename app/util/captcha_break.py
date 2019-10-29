@@ -12,8 +12,6 @@ from util.captcha_code import random_captcha_string, get_captcha_str_map, get_st
 from PIL import Image
 from tqdm import tqdm
 
-import pandas as pd
-
 # the width and width default is 160 and 60
 HEIGHT = 60
 WIDTH = 160
