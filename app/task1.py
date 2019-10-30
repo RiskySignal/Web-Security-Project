@@ -5,7 +5,7 @@ from flask_moment import Moment
 
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, equal_to
-from app.util.db_processor import verify_user
+from util.db_processor import verify_user
 
 import os
 import random
@@ -56,7 +56,7 @@ class LoginForm(FlaskForm):
     username = StringField('Input your username',
                            validators=[DataRequired(message='Say something I am giving up on you')])
     password = StringField('Input your password',
-                             validators=[DataRequired(message='Say something I am giving up on you')])
+                           validators=[DataRequired(message='Say something I am giving up on you')])
 
     verification = StringField('Input the verification code below',
                                validators=[DataRequired(message='Say something I am giving up on you')])
@@ -82,7 +82,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         if verify_user(form.username.data, form.password.data, conn):
-        # if form.username.data == 'TonyLin' and form.password.data == '123456':
+            # if form.username.data == 'TonyLin' and form.password.data == '123456':
             flash("Login successfully")
             # return render_template(url_for('index'))
         else:

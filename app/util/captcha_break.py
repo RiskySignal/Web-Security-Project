@@ -31,6 +31,10 @@ TRAINING_STEPS = 1000
 VALIDA_STEPS = 100
 EPOCHS = 100
 N_CHAR = get_str_map_len(include_char=INCLUDE_CHAR)
+FILE_PATH = os.path.dirname(__file__)
+MODEL_PATH = os.path.join(FILE_PATH, "../model/cnn.h5")
+TRAIN_MODEL_PATH = os.path.join(FILE_PATH, "../model/cnn_best.h5")
+print(MODEL_PATH)
 
 
 class CaptchaSequence(Sequence):
@@ -124,7 +128,7 @@ def set_config():
     K.set_session(sess)
 
 
-def train_model(epochs=EPOCHS, batch_size=BATCH_SIZE, training_steps=TRAINING_STEPS, valida_steps=VALIDA_STEPS, height=HEIGHT, width=WIDTH, include_char=INCLUDE_CHAR, train_model_path="../model/cnn_best.h5", model_path="../model/cnn.h5", csvlogger_path="../model/cnn.csv", n_char=N_CHAR, n_capt=N_CAPT):
+def train_model(epochs=EPOCHS, batch_size=BATCH_SIZE, training_steps=TRAINING_STEPS, valida_steps=VALIDA_STEPS, height=HEIGHT, width=WIDTH, include_char=INCLUDE_CHAR, train_model_path=TRAIN_MODEL_PATH, model_path=MODEL_PATH, csvlogger_path="../model/cnn.csv", n_char=N_CHAR, n_capt=N_CAPT):
     """
     train a cnn model
     :param epochs:
@@ -171,7 +175,7 @@ def train_model(epochs=EPOCHS, batch_size=BATCH_SIZE, training_steps=TRAINING_ST
     model.save(model_path, include_optimizer=False)
 
 
-def predict_captcha(input_tensor, height=HEIGHT, width=WIDTH, n_capt=N_CAPT, n_char=N_CHAR, include_char=INCLUDE_CHAR, model_path="../model/cnn.h5"):
+def predict_captcha(input_tensor, height=HEIGHT, width=WIDTH, n_capt=N_CAPT, n_char=N_CHAR, include_char=INCLUDE_CHAR, model_path=MODEL_PATH):
     """
     predict the captcha in the image input
     :param input_tensor: image input with axis(width, height, 3)
@@ -214,7 +218,7 @@ def convert_image(image_path, width=WIDTH, height=HEIGHT):
     return np.array(image) / 255.0
 
 
-def evaluate(height=HEIGHT, width=WIDTH, n_capt=N_CAPT, n_char=N_CHAR, model_path="../model/cnn.h5", batch_num=100, batch_size=64):
+def evaluate(height=HEIGHT, width=WIDTH, n_capt=N_CAPT, n_char=N_CHAR, model_path=MODEL_PATH, batch_num=100, batch_size=64):
     """
 
     :param height:
@@ -242,7 +246,7 @@ def evaluate(height=HEIGHT, width=WIDTH, n_capt=N_CAPT, n_char=N_CHAR, model_pat
     return batch_acc / batch_num
 
 
-def predict_image(image_path, height=HEIGHT, width=WIDTH, n_capt=N_CAPT, n_char=N_CHAR, include_char=INCLUDE_CHAR, model_path="../model/cnn.h5"):
+def predict_image(image_path, height=HEIGHT, width=WIDTH, n_capt=N_CAPT, n_char=N_CHAR, include_char=INCLUDE_CHAR, model_path=MODEL_PATH):
     """
     predict image
     :param image_path:
