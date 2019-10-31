@@ -64,11 +64,14 @@ def task2login():
         if CAPTCHA_SESSION_NAME in session:
             if session[CAPTCHA_SESSION_NAME] == captcha_hash(captcha):
                 if verify_user(username, password, connection):
+                    print("成功！")
                     flash("成功！")
                 else:
+                    print("用户名密码错误！")
                     flash("用户名密码错误！")
             else:
                 # the captcha is not right
+                print("验证码错误！")
                 flash("验证码错误！")
         else:
             # the captcha is out of date
